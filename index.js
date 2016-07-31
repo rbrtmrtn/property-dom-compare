@@ -181,11 +181,13 @@ const compareAccountAtIndex = (i) => {
           .catch((error) => {
             if (error === 'finished') throw error  // hacky
             console.error('AIS failed:', error)
+            process.stdout.write(account + ',' + 'error-ais' + '\n')
             compareNextAccount(i)
           })
       })
       .catch((error) => {
         console.error('OPA failed:', error)
+        process.stdout.write(account + ',' + 'error-opa' + '\n')
         compareNextAccount(i)
       })
   } catch (msg) {
