@@ -191,6 +191,9 @@ const compareAccountAtIndex = (i) => {
   } catch (msg) {
     if (msg === 'finished') {
       nightmare.end()
+      console.error('Finished.')
+      // For some reason the process isn't ending, so do this :/
+      process.exit()
     }
     else throw msg
   }
