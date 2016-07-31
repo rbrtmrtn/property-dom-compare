@@ -3,4 +3,7 @@ module.exports = [
 	'rubbish-day',
 	// 'valuation',
 	'property-owners',
+	'homestead',
+	'sales-price',
+	'sales-date',
 ]
