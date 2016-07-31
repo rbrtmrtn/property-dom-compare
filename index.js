@@ -13,7 +13,7 @@ const maxAccounts         = args.max
 const shuffle             = args.shuffle
 const show                = args.show
 
-const valuationAttrNames  = [
+const valuationAttrNames = [
   'year',
   'market-value',
   'taxable-land',
@@ -21,6 +21,15 @@ const valuationAttrNames  = [
   'exempt-land',
   'exempt-improvement',
 ]
+
+const outCols = [
+  'account',
+  'key',
+  'ais',
+  'opa',
+  'valuation',
+]
+process.stdout.write(outCols.join(',') + '\n')
 
 if (shuffle) util.shuffle(accounts)
 
@@ -130,6 +139,17 @@ const diffValues = (account, ais, opa) => {
   return diffs
 }
 
+const writeDiffs = (diffs) => {
+  for (let diff of diffs) {
+    const vals = []
+    for (let outCol of outCols) {
+      vals.push(diff[outCol])
+    }
+    const outRow = vals.join(',') + '\n'
+    process.stdout.write(outRow)
+  }
+}
+
 let diffs = []
 
 const compareAccountAtIndex = (i) => {
@@ -141,18 +161,17 @@ const compareAccountAtIndex = (i) => {
     // Skip duplicates
     if (diffs[account]) compareAccountAtIndex(i + 1)
 
-    console.info('Comparing', account)
+    // console.info('Comparing', account)
     
     // Get values for OPA-backed site
     scrapeOpa(account, hooks, nightmare)
       .then((opa) => {
         // Get values for AIS-backed site
         scrapeAis(account, hooks, nightmare)
-          // .end()
           .then((ais) => {
             const accountDiffs = diffValues(account, ais, opa)
             diffs = diffs.concat(accountDiffs)
-            console.log(accountDiffs)
+            writeDiffs(accountDiffs)
 
             if (i < accounts.length - 1) {
               compareAccountAtIndex(i + 1)
@@ -160,6 +179,7 @@ const compareAccountAtIndex = (i) => {
             else throw 'finished'
           })
           .catch((error) => {
+            if (error === 'finished') throw error  // hacky
             console.error('AIS failed:', error)
             compareNextAccount(i)
           })
@@ -171,7 +191,6 @@ const compareAccountAtIndex = (i) => {
   } catch (msg) {
     if (msg === 'finished') {
       nightmare.end()
-      // Write out
     }
     else throw msg
   }
