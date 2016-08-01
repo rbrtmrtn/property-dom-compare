@@ -97,8 +97,8 @@ const diffValues = (account, ais, opa) => {
     let opaVal = opa[hook]
     // Apply transforms
     if (transforms[hook]) {
-      if (transforms[hook].ais) aisVal = transforms[hook].ais(aisVal)
-      if (transforms[hook].opa) opaVal = transforms[hook].opa(opaVal)
+      if (aisVal && transforms[hook].ais) aisVal = transforms[hook].ais(aisVal)
+      if (opaVal && transforms[hook].opa) opaVal = transforms[hook].opa(opaVal)
     }
     if (aisVal !== opaVal) {
       diffs.push({
@@ -153,6 +153,8 @@ const writeDiffs = (diffs) => {
 let diffs = []
 
 const compareAccountAtIndex = (i) => {
+  if (i % 100 === 0) console.error(i)
+
   try {
     if (maxAccounts && i === maxAccounts) throw 'finished'
 
