@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
 	shuffle: (array) => {
 	  let i = 0

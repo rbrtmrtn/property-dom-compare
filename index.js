@@ -1,3 +1,5 @@
+"use strict";
+
 const Nightmare   = require('nightmare')
 const minimist    = require('minimist')
 const hooks       = require('./hooks')
